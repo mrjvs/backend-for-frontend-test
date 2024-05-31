@@ -5,7 +5,7 @@ import { logger } from '../log';
 export const prisma = new PrismaClient({
   datasources: {
     db: {
-      url: conf.db.connection,
+      url: conf.db.filePathUrl,
     },
   },
 });

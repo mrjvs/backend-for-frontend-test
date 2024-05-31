@@ -10,16 +10,9 @@ Quick simple backend for testing frontend interviewing candidates. An API server
 
 # 🧬Development
 
-Instructions on how to run for development are not yet ready.
 Create an `.env` file at `/.env` with these contents:
 ```sh
-PST_USE_PRESETS=docker
-PST_DB__CONNECTION=postgres://postgres:postgres@localhost:5432/postgres
-```
-
-Then run the compose file at `/.docker/dev` with this command to setup the complimentary services:
-```sh
-docker compose up -d
+PST_DB__FILE_PATH_URL=file:./dev.db
 ```
 
 Then finally, spin up the dev server:

@@ -5,7 +5,10 @@ import { handler } from '@/utils/handle';
 import { getId } from '@/utils/get-id';
 import { NotFoundError } from '@/utils/error';
 import { mapPage, pagerSchema } from '@/utils/pages';
-import { mapPost } from '@/mappings/post';
+import { mapPost, mapShallowPost } from '@/mappings/post';
+import { Prisma } from '@prisma/client';
+import slugify from 'slugify';
+import { nanoid } from 'nanoid';
 
 export const postsRouter = makeRouter((app) => {
   app.post(
@@ -20,13 +23,20 @@ export const postsRouter = makeRouter((app) => {
       },
     },
     handler(async ({ body }) => {
+      let slug = slugify(body.title);
+      const existingSlug = await prisma.post.findUnique({
+        where: {
+          slug,
+        }
+      });
+      if (existingSlug) slug = `${slug}-${nanoid(4)}`
       const newPost = await prisma.post.create({
         data: {
           id: getId('pst'),
-          slug: "test",
+          slug,
           title: body.title,
           content: body.content,
-        },
+        }
       });
       return mapPost(newPost);
     }),
@@ -38,21 +48,23 @@ export const postsRouter = makeRouter((app) => {
       schema: {
         description: 'Get post',
         querystring: z.object({
-          type: z.enum(["id", "slug"]),
+          type: z.enum(["id", "slug"]).default('id'),
         }),
         params: z.object({
           id: z.string(),
         }),
       },
     },
-    handler(async ({ params }) => {
-      const post = await prisma.project.findUnique({
-        where: {
-          id: params.id,
-        },
+    handler(async ({ params, query }) => {
+      const postQuery: Prisma.PostWhereUniqueInput = query.type === 'id' ? {
+        id: params.id,
+      } : {
+        slug: params.id,
+      };
+      const post = await prisma.post.findUnique({
+        where: postQuery,
       });
       if (!post) throw new NotFoundError();
-
       return mapPost(post);
     }),
   );
@@ -74,7 +86,7 @@ export const postsRouter = makeRouter((app) => {
           createdAt: 'desc',
         },
       });
-      return mapPage(query, posts.map(mapPost), total);
+      return mapPage(query, posts.map(mapShallowPost), total);
     }),
   );
 });

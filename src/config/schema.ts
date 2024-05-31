@@ -5,7 +5,6 @@ export const configSchema = z.object({
   server: z
     .object({
       port: z.coerce.number().default(8080),
-      cors: z.string().default(''),
       basePath: z.string().default('/'),
     })
     .default({}),
@@ -16,7 +15,6 @@ export const configSchema = z.object({
     })
     .default({}),
   db: z.object({
-    connection: z.string(),
-    ssl: zodCoercedBoolean().default(false),
+    filePathUrl: z.string(), // has to be "file:/my/path/to/thefile.db"
   }),
 });
