@@ -5,6 +5,7 @@
   "main": "./dist/main.js",
   "types": "./dist/main.d.ts",
   "type": "module",
+  "packageManager": "pnpm@8.15.1",
   "prisma": {
     "schema": "./src/modules/prisma/schema.prisma",
     "seed": "pnpm run seed"
