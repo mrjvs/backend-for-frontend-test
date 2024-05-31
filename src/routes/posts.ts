@@ -9,6 +9,7 @@ import { getId } from '@/utils/get-id';
 import { NotFoundError } from '@/utils/error';
 import { mapPage, pagerSchema } from '@/utils/pages';
 import { mapPost, mapShallowPost } from '@/mappings/post';
+import { assertAuth } from '../utils/auth';
 
 export const postsRouter = makeRouter((app) => {
   app.post(
@@ -22,7 +23,8 @@ export const postsRouter = makeRouter((app) => {
         }),
       },
     },
-    handler(async ({ body }) => {
+    handler(async ({ req, body }) => {
+      assertAuth(req);
       let slug = slugify(body.title);
       const existingSlug = await prisma.post.findUnique({
         where: {
@@ -55,7 +57,8 @@ export const postsRouter = makeRouter((app) => {
         }),
       },
     },
-    handler(async ({ params, query }) => {
+    handler(async ({ req, params, query }) => {
+      assertAuth(req);
       const postQuery: Prisma.PostWhereUniqueInput =
         query.type === 'id'
           ? {
@@ -80,7 +83,8 @@ export const postsRouter = makeRouter((app) => {
         querystring: pagerSchema(),
       },
     },
-    handler(async ({ query }) => {
+    handler(async ({ req, query }) => {
+      assertAuth(req);
       const total = await prisma.post.count();
       const posts = await prisma.post.findMany({
         take: query.limit,

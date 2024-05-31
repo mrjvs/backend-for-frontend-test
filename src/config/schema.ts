@@ -17,4 +17,7 @@ export const configSchema = z.object({
   db: z.object({
     filePathUrl: z.string(), // has to be "file:/my/path/to/thefile.db"
   }),
+  crypto: z.object({
+    jwtSecret: z.string(),
+  }),
 });
