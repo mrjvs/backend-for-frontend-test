@@ -9,16 +9,16 @@ function createFakePost(): Prisma.PostCreateInput {
   const slug = slugify(title);
   const content = `${faker.lorem.sentence({ min: 10, max: 10 })}
 
-    # ${title}
-    ${faker.lorem.paragraphs(3)}
+# ${title}
+${faker.lorem.paragraphs(3)}
 
-    ## ${faker.airline.airline().name}
-    ${faker.lorem.paragraphs(3)}
+## ${faker.airline.airline().name}
+${faker.lorem.paragraphs(3)}
 
-    ---
+---
 
-    ${faker.lorem.paragraphs(2)}
-  `;
+${faker.lorem.paragraphs(2)}
+`;
 
   return {
     title,
